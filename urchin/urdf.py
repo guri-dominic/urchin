@@ -696,6 +696,11 @@ class Mesh(URDFTypeWithMesh):
         # Load the mesh, combining collision geometry meshes but keeping
         # visual ones separate to preserve colors and textures
         fn = get_filename(path, kwargs["filename"])
+        if "package://" in fn:
+            import os
+            first, second = fn.split("package://")
+            base_second = second.split(os.sep)[0]
+            fn = os.path.join(*first.split(base_second)[:-1], second)
         combine = node.getparent().getparent().tag == Collision._TAG
         if not lazy_load_meshes:
             meshes = cls._load_and_combine_meshes(fn, combine)
